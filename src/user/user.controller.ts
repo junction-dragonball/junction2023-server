@@ -16,9 +16,44 @@ export class UserController {
   }
 
   @Post()
-  async createUser(@Body() data: Prisma.UserCreateInput): Promise<User> {
+  async createUser(@Body() data: Omit<Prisma.UserCreateInput, 'name'>): Promise<User> {
+
     return this.prisma.user.create({
-      data,
+      data: {
+        name: this.randomNickname(),
+        ...data,
+      },
     });
+  }
+
+  randomNickname(): string {
+    const prefix = [
+      '귀여운',
+      '멋진',
+      '똑똑한',
+      '용감한',
+      '행운의',
+      '미친',
+      '사랑스러운',
+      '화려한',
+      '강력한',
+      '재미있는',
+    ];
+    const name = [
+      '사슴',
+      '고양이',
+      '강아지',
+      '팬더',
+      '호랑이',
+      '토끼',
+      '사자',
+      '코끼리',
+      '치타',
+      '여우',
+    ];
+
+    return `${prefix[Math.floor(Math.random() * prefix.length)]} ${
+      name[Math.floor(Math.random() * name.length)]
+    }`;
   }
 }
