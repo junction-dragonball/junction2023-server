@@ -37,10 +37,11 @@ export class QuestController {
     });
   }
 
-  async getQuestWithProgress(userId: number) {
+  async getQuestWithProgress(userId: number, questId?: string) {
     return this.prisma.quest.findMany({
       where: {
         available: true,
+        id: questId ? Number(questId) : undefined,
       },
       include: {
         Progress: {
@@ -126,14 +127,31 @@ export class QuestController {
   }
 
   @Get(':id')
-  async getQuestById(@Param('id') id: string): Promise<Quest | undefined> {
-    // TODO: append in-progress count
+  async getQuestById(
+    @Param('id') id: string,
+    @Headers('Authorization') userId: string,
+  ) {
+    const questsWithProgress = await this.getQuestWithProgress(
+      Number(userId),
+      id,
+    );
 
-    return this.prisma.quest.findUnique({
-      where: {
-        id: Number(id),
-      },
-      include: {},
-    });
+    if (questsWithProgress.length === 0)
+      throw new BadRequestException('Quest not found');
+
+    return questsWithProgress.map((quest) => {
+      if (quest.Progress.length === 0) {
+        return {
+          ...quest,
+          status: 'NOT_STARTED',
+        };
+      } else {
+        const progress = quest.Progress[0];
+        return {
+          ...quest,
+          status: progress.status,
+        };
+      }
+    })[0];
   }
 }

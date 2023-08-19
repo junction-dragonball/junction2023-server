@@ -28,6 +28,8 @@ model Quest {
   reward           Int
   available        Boolean    @default(true)
   createdAt        DateTime   @default(now())
+  inProgressCount  Int       @default(0)
+  completeCount Int @default(0)
   Progress         Progress[]
 }
 

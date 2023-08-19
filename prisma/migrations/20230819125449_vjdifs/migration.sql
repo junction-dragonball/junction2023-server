@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE `quest` ADD COLUMN `completeCount` INTEGER NOT NULL DEFAULT 0,
+    ADD COLUMN `inProgressCount` INTEGER NOT NULL DEFAULT 0;
