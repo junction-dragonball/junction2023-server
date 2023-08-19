@@ -19,7 +19,6 @@ model Quest {
   id               Int        @id @default(autoincrement())
   title            String
   thumbnailUrl     String
-  mainImageUrl     String
   difficulty       Int
   shortDescription String     @db.VarChar(255)
   description      String     @db.VarChar(10000)
@@ -51,7 +50,6 @@ model Restaurant {
   kakaoMapId   String
   rating       Float
   thumbnailUrl String
-  mainImageUrl String
   available    Boolean @default(true)
   menus        Menu[]
 }
