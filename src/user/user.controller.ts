@@ -7,15 +7,21 @@ export class UserController {
   constructor(private prisma: PrismaService) {}
 
   @Get(':id')
-  async getUserById(@Param('id') id: string): Promise<User | null> {
-    return this.prisma.user.findUnique({
+  async getUserById(@Param('id') deviceId: string): Promise<User> {
+    const user = await this.prisma.user.findUnique({
       where: {
-        id: Number(id),
+        deviceId,
       },
+    });
+    if (user) {
+      return user;
+    }
+
+    return this.createUser({
+      deviceId,
     });
   }
 
-  @Post()
   async createUser(@Body() data: Omit<Prisma.UserCreateInput, 'name'>): Promise<User> {
 
     return this.prisma.user.create({
