@@ -1,10 +1,10 @@
 import { Body, Controller, Get, Param } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
-import { Prisma, Quest, User } from '@prisma/client';
+import { Quest } from '@prisma/client';
 
 type QuestListing = Pick<
   Quest,
-  'title' | 'thumbnailUrl' | 'description' | 'difficulty' | 'createdAt'
+  'title' | 'thumbnailUrl' | 'shortDescription' | 'difficulty' | 'createdAt'
 >;
 
 @Controller('quest')
@@ -19,7 +19,7 @@ export class QuestController {
       select: {
         thumbnailUrl: true,
         title: true,
-        description: true,
+        shortDescription: true,
         difficulty: true,
         createdAt: true,
       },

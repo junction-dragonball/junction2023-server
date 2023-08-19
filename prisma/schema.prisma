@@ -16,19 +16,20 @@ model User {
 }
 
 model Quest {
-  id           Int        @id @default(autoincrement())
-  title        String
-  thumbnailUrl String
-  mainImageUrl String
-  difficulty   Int
-  description  String
-  period       Int
-  verifyMethod String
-  instruction  Json
-  reward       Int
-  available    Boolean    @default(true)
-  createdAt    DateTime   @default(now())
-  Progress     Progress[]
+  id               Int        @id @default(autoincrement())
+  title            String
+  thumbnailUrl     String
+  mainImageUrl     String
+  difficulty       Int
+  shortDescription String
+  description      String
+  period           Int
+  verifyMethod     String
+  instruction      String
+  reward           Int
+  available        Boolean    @default(true)
+  createdAt        DateTime   @default(now())
+  Progress         Progress[]
 }
 
 model Progress {
@@ -43,7 +44,7 @@ model Progress {
 }
 
 model Restaurant {
-  id           Int    @id @default(autoincrement())
+  id           Int     @id @default(autoincrement())
   name         String
   latitude     Float
   longitude    Float
@@ -51,6 +52,7 @@ model Restaurant {
   rating       Float
   thumbnailUrl String
   mainImageUrl String
+  available    Boolean @default(true)
   menus        Menu[]
 }
 
