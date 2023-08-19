@@ -103,7 +103,7 @@ export class QuestController {
 
     const newTotalReward = progress.totalReward + progress.unitReward;
     const partialProgress =
-      newTotalReward >= progress.totalReward
+      newTotalReward >= progress.quest.reward
         ? { status: 'COMPLETED', totalReward: newTotalReward }
         : { totalReward: newTotalReward };
 
