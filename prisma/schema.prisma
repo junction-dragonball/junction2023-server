@@ -9,6 +9,7 @@ datasource db {
 
 model User {
   id       Int        @id @default(autoincrement())
+  name     String
   points   Int        @default(0)
   Progress Progress[]
 }
@@ -19,8 +20,7 @@ model Quest {
   thumbnail    String
   difficulty   Int
   description  String
-  startDate    DateTime
-  endDate      DateTime
+  period       Int
   verifyMethod String
   reward       Int
   Progress     Progress[]
@@ -28,6 +28,8 @@ model Quest {
 
 model Progress {
   id        Int      @id @default(autoincrement())
+  startDate    DateTime
+  endDate      DateTime
   user      User     @relation(fields: [userId], references: [id])
   userId    Int
   quest     Quest    @relation(fields: [questId], references: [id])
