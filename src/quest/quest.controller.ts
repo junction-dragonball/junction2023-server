@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Controller, Get, Param, Post, Headers } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { Quest } from '@prisma/client';
 
@@ -38,7 +38,7 @@ export class QuestController {
   @Post(':id/init')
   async startQuest(
     @Param('id') id: string,
-    @Body() payload: { userId: number },
+    @Headers('Authorization') userId: string,
   ) {
     const quest = await this.prisma.quest.findUnique({
       where: {
@@ -53,7 +53,7 @@ export class QuestController {
     return this.prisma.progress.create({
       data: {
         questId: Number(id),
-        userId: Number(payload.userId),
+        userId: Number(userId),
         status: 'IN_PROGRESS',
         unitReward: quest.reward / quest.period,
         endDate: endDate,
@@ -62,10 +62,13 @@ export class QuestController {
   }
 
   @Post(':id/get-point')
-  async getPoint(@Param('id') id: string, @Body() payload: { userId: number }) {
+  async getPoint(
+    @Param('id') id: string,
+    @Headers('Authorization') userId: string,
+  ) {
     const progress = await this.prisma.progress.findFirst({
       where: {
-        userId: Number(payload.userId),
+        userId: Number(userId),
         questId: Number(id),
       },
       include: {
@@ -80,14 +83,18 @@ export class QuestController {
     if (progress.quest.reward <= progress.totalReward)
       throw new Error('Quest already completed');
 
+    const newTotalReward = progress.totalReward + progress.unitReward;
+    const partialProgress =
+      newTotalReward >= progress.totalReward
+        ? { status: 'COMPLETED', totalReward: newTotalReward }
+        : { totalReward: newTotalReward };
+
     return {
       progress: await this.prisma.progress.update({
         where: {
           id: progress.id,
         },
-        data: {
-          totalReward: progress.totalReward + progress.unitReward,
-        },
+        data: partialProgress,
       }),
       user: await this.prisma.user.update({
         where: {
@@ -108,6 +115,7 @@ export class QuestController {
       where: {
         id: Number(id),
       },
+      include: {},
     });
   }
 }
