@@ -21,10 +21,10 @@ model Quest {
   thumbnailUrl     String
   mainImageUrl     String
   difficulty       Int
-  shortDescription String
-  description      String
+  shortDescription String     @db.VarChar(255)
+  description      String     @db.VarChar(10000)
   period           Int
-  verifyMethod     String
+  verifyMethod     String     @db.VarChar(2500)
   instruction      String
   reward           Int
   available        Boolean    @default(true)
