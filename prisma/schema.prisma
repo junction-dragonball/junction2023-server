@@ -18,38 +18,47 @@ model User {
 model Quest {
   id           Int        @id @default(autoincrement())
   title        String
-  thumbnail    String
+  thumbnailUrl String
+  mainImageUrl String
   difficulty   Int
   description  String
   period       Int
   verifyMethod String
+  instruction  Json
   reward       Int
+  available    Boolean    @default(true)
+  createdAt    DateTime   @default(now())
   Progress     Progress[]
 }
 
 model Progress {
   id        Int      @id @default(autoincrement())
-  startDate DateTime
+  status    String
+  startDate DateTime @default(now())
   endDate   DateTime
   user      User     @relation(fields: [userId], references: [id])
   userId    Int
   quest     Quest    @relation(fields: [questId], references: [id])
   questId   Int
-  status    String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }
 
 model Restaurant {
-  id          Int    @id @default(autoincrement())
-  name        String
-  latitude    Float
-  longitude   Float
-  kakaoMapId  String
-  thumbnail   String
-  description String
-  address     String
-  phone       String
-  openTime    String
-  closeTime   String
+  id           Int    @id @default(autoincrement())
+  name         String
+  latitude     Float
+  longitude    Float
+  kakaoMapId   String
+  rating       Float
+  thumbnailUrl String
+  mainImageUrl String
+  menus        Menu[]
+}
+
+model Menu {
+  id           Int        @id @default(autoincrement())
+  thumnailUrl  String
+  name         String
+  price        Int
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
+  restaurantId Int
 }

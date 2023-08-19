@@ -1,6 +1,6 @@
-import { Body, Controller, Get, Param, Post } from "@nestjs/common";
-import { PrismaService } from "../prisma.service";
-import { Prisma, User } from "@prisma/client";
+import { Body, Controller, Get, Param } from '@nestjs/common';
+import { PrismaService } from '../prisma.service';
+import { Prisma, User } from '@prisma/client';
 
 @Controller('user')
 export class UserController {
@@ -22,8 +22,9 @@ export class UserController {
     });
   }
 
-  async createUser(@Body() data: Omit<Prisma.UserCreateInput, 'name'>): Promise<User> {
-
+  async createUser(
+    @Body() data: Omit<Prisma.UserCreateInput, 'name'>,
+  ): Promise<User> {
     return this.prisma.user.create({
       data: {
         name: this.randomNickname(),
