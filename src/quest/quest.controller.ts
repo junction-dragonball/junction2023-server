@@ -1,4 +1,11 @@
-import { Controller, Get, Param, Post, Headers } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  Post,
+  Headers,
+  BadRequestException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { Quest } from '@prisma/client';
 
@@ -55,7 +62,7 @@ export class QuestController {
         id: Number(id),
       },
     });
-    if (!quest) throw new Error('Quest not found');
+    if (!quest) throw new BadRequestException('Quest not found');
 
     const endDate = new Date();
     endDate.setDate(endDate.getDate() + quest.period);
@@ -86,12 +93,13 @@ export class QuestController {
         user: true,
       },
     });
-    if (!progress) throw new Error('Progress not found');
-    if (new Date() > progress.endDate) throw new Error('Quest expired');
+    if (!progress) throw new BadRequestException('Progress not found');
+    if (new Date() > progress.endDate)
+      throw new BadRequestException('Quest expired');
     if (progress.status !== 'IN_PROGRESS')
-      throw new Error('Status invalid: ' + progress.status);
+      throw new BadRequestException('Status invalid: ' + progress.status);
     if (progress.quest.reward <= progress.totalReward)
-      throw new Error('Quest already completed');
+      throw new BadRequestException('Quest already completed');
 
     const newTotalReward = progress.totalReward + progress.unitReward;
     const partialProgress =
