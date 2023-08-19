@@ -7,7 +7,46 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model test {
-  id     Int  @id @default(autoincrement())
-  number Int?
+model User {
+  id       Int        @id @default(autoincrement())
+  points   Int        @default(0)
+  Progress Progress[]
+}
+
+model Quest {
+  id           Int        @id @default(autoincrement())
+  title        String
+  thumbnail    String
+  difficulty   Int
+  description  String
+  startDate    DateTime
+  endDate      DateTime
+  verifyMethod String
+  reward       Int
+  Progress     Progress[]
+}
+
+model Progress {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  quest     Quest    @relation(fields: [questId], references: [id])
+  questId   Int
+  status    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Restaurant {
+  id          Int    @id @default(autoincrement())
+  name        String
+  latitude    Float
+  longitude   Float
+  kakaoMapId  String
+  thumbnail   String
+  description String
+  address     String
+  phone       String
+  openTime    String
+  closeTime   String
 }
