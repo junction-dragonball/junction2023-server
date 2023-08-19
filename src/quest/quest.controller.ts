@@ -2,35 +2,45 @@ import { Controller, Get, Param, Post, Headers } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { Quest } from '@prisma/client';
 
-type QuestListing = Pick<
-  Quest,
-  | 'id'
-  | 'title'
-  | 'thumbnailUrl'
-  | 'shortDescription'
-  | 'difficulty'
-  | 'createdAt'
->;
+type QuestDto = Quest & { status: string };
 
 @Controller('quest')
 export class QuestController {
   constructor(private prisma: PrismaService) {}
 
   @Get()
-  async getAllQuest(): Promise<QuestListing[]> {
-    // TODO: append status from prgress
+  async getAllQuest(
+    @Headers('Authorization') userId: string,
+  ): Promise<QuestDto[]> {
+    const questsWithProgress = await this.getQuestWithProgress(Number(userId));
 
+    return questsWithProgress.map((quest) => {
+      if (quest.Progress.length === 0) {
+        return {
+          ...quest,
+          status: 'NOT_STARTED',
+        };
+      } else {
+        const progress = quest.Progress[0];
+        return {
+          ...quest,
+          status: progress.status,
+        };
+      }
+    });
+  }
+
+  async getQuestWithProgress(userId: number) {
     return this.prisma.quest.findMany({
-      select: {
-        id: true,
-        thumbnailUrl: true,
-        title: true,
-        shortDescription: true,
-        difficulty: true,
-        createdAt: true,
-      },
       where: {
         available: true,
+      },
+      include: {
+        Progress: {
+          where: {
+            userId: userId,
+          },
+        },
       },
     });
   }
