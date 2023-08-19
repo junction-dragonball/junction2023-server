@@ -60,6 +60,7 @@ model Restaurant {
   kakaoMapId    String?
   naverMapId    String?
   rating        Float
+  mapImageUrl   String
   available     Boolean @default(true)
   menus         Menu[]
 }
