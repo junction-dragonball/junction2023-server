@@ -4,7 +4,12 @@ import { Quest } from '@prisma/client';
 
 type QuestListing = Pick<
   Quest,
-  'title' | 'thumbnailUrl' | 'shortDescription' | 'difficulty' | 'createdAt'
+  | 'id'
+  | 'title'
+  | 'thumbnailUrl'
+  | 'shortDescription'
+  | 'difficulty'
+  | 'createdAt'
 >;
 
 @Controller('quest')
@@ -17,6 +22,7 @@ export class QuestController {
 
     return this.prisma.quest.findMany({
       select: {
+        id: true,
         thumbnailUrl: true,
         title: true,
         shortDescription: true,
