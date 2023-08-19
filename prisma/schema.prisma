@@ -32,30 +32,34 @@ model Quest {
 }
 
 model Progress {
-  id        Int      @id @default(autoincrement())
-  status    String
-  startDate DateTime @default(now())
-  endDate   DateTime
-  unitReward Int
-  totalReward Int @default(0)
-  user      User     @relation(fields: [userId], references: [id])
-  userId    Int
-  quest     Quest    @relation(fields: [questId], references: [id])
-  questId   Int
+  id          Int      @id @default(autoincrement())
+  status      String
+  startDate   DateTime @default(now())
+  endDate     DateTime
+  unitReward  Int
+  totalReward Int      @default(0)
+  user        User     @relation(fields: [userId], references: [id])
+  userId      Int
+  quest       Quest    @relation(fields: [questId], references: [id])
+  questId     Int
 
   @@unique([userId, questId])
 }
 
 model Restaurant {
-  id           Int     @id @default(autoincrement())
-  name         String
-  latitude     Float
-  longitude    Float
-  kakaoMapId   String
-  rating       Float
-  thumbnailUrl String
-  available    Boolean @default(true)
-  menus        Menu[]
+  id            Int     @id @default(autoincrement())
+  name          String
+  thumbnailUrl  String
+  editorComment String  @db.VarChar(512)
+  originalPrice Int
+  discountPrice Int
+  latitude      Float
+  longitude     Float
+  kakaoMapId    String?
+  naverMapId    String?
+  rating        Float
+  available     Boolean @default(true)
+  menus         Menu[]
 }
 
 model Menu {
