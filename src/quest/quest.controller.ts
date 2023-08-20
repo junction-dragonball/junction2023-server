@@ -126,6 +126,15 @@ export class QuestController {
     };
   }
 
+  @Post('progress/reset')
+  async resetProgress(@Headers('Authorization') userId: string) {
+    return this.prisma.progress.deleteMany({
+      where: {
+        userId: Number(userId),
+      },
+    });
+  }
+
   @Get(':id')
   async getQuestById(
     @Param('id') id: string,
